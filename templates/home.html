@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEWS FRONT</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      font-size: 18px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Greeting */
+    .greeting {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 22px;   
+      font-weight: bold;
+      color: white;      
+      text-shadow: 2px 2px 5px #000;
+      font-family: 'Broadway', sans-serif;
+    }
+
+    @font-face {
+      font-family: 'Broadway';
+      src: local('Broadway'), url('https://fonts.cdnfonts.com/s/13698/BROADW.woff') format('woff');
+    }
+
+    /* Typing Header */
+    .typing {
+      font-size: 36px;
+      font-family: 'Broadway', sans-serif;
+      font-weight: bold;
+      white-space: nowrap;
+      border-right: 2px solid #ff0000;
+      width: 0;
+      overflow: hidden;
+      margin: 50px 20px 20px;
+      text-transform: uppercase;
+      color: #ff0000;
+      animation: typing 3s steps(30) forwards, blink 0.7s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 520px }
+    }
+    @keyframes blink {
+      50% { border-color: transparent }
+    }
+
+    /* News Card */
+    .card {
+      display: flex;
+      margin: 0 15px 25px;
+      background-color: #1f1f1f;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .card img {
+      width: 33%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .card .content {
+      padding: 14px;
+      width: 67%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .tag {
+      color: #f7f7f7;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #ff0000;
+    }
+    .card p {
+      margin: 0;
+      font-size: 15px;
+      color: #bbb;
+    }
+    .extra {
+      font-size: 13px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    /* Load More */
+    .load-more {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    .load-more button {
+      background: #ff3c3c;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .load-more button:hover {
+      background: #e63232;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #1f1f1f;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #333;
+    }
+    .navbar div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 14px;
+      color: #bbb;
+    }
+    .navbar div.active {
+      color: #ff3c3c;
+      font-weight: bold;
+    }
+    .navbar i {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    /* --- Chatbot Khabrilal --- */
+    .chatbot-icon {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      background: #ff3c3c;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 26px;
+      cursor: grab;
+      z-index: 20;
+    }
+    .chat-window {
+      position: fixed;
+      bottom: 220px;
+      right: 20px;
+      width: 300px;
+      background: #1f1f1f;
+      border: 1px solid #333;
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 30;
+    }
+    .chat-header {
+      background: #ff3c3c;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+    }
+    .chat-body {
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .chat-footer {
+      display: flex;
+      border-top: 1px solid #333;
+    }
+    .chat-footer input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: #222;
+      color: white;
+    }
+    .chat-footer button {
+      background: #ff3c3c;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Greeting -->
+  <div class="greeting" id="greetingText"></div>
+
+  <!-- Typing Header -->
+  <div class="typing">WELCOME TO NEWS FRONT,</div>
+
+  <!-- News Container -->
+  <div id="newsContainer"></div>
+
+  <!-- Load More -->
+  <div class="load-more" id="loadMoreBtn">
+    <button onclick="showMore()">▼ Load More News</button>
+  </div>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="active"><i class="fa-solid fa-chart-line"></i>Rise</div>
+    <div><i class="fa-solid fa-globe"></i>Real</div>
+    <div><i class="fa-solid fa-microphone"></i>Vox</div>
+  </div>
+
+  <!-- Chatbot Khabrilal -->
+  <div class="chatbot-icon" id="chatbotIcon" title="Khabrilal">
+    🤖
+  </div>
+
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">Khabrilal</div>
+    <div class="chat-body" id="chatBody">
+      <p><b>Khabrilal:</b> Hi! I can translate or explain news in any language. Type below 👇</p>
+    </div>
+    <div class="chat-footer">
+      <input type="text" id="chatInput" placeholder="Ask me anything...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Greeting based on time
+    function setGreeting() {
+      const hour = new Date().getHours();
+      let text = "Hello!";
+      if (hour >= 5 && hour < 12) text = "Good Morning!";
+      else if (hour >= 12 && hour < 17) text = "Good Afternoon!";
+      else if (hour >= 17 && hour < 21) text = "Good Evening!";
+      else text = "Good Night!";
+      document.getElementById("greetingText").textContent = text;
+    }
+    setGreeting();
+
+    // News data
+    const newsData = [
+      { tag: "High Impact", title: "City unveils AI-powered traffic lights", desc: "Adaptive signals cut wait times by 22% during rush hour.", extra: "Pilot phase to expand next year." },
+      { tag: "Breaking", title: "Major breakthrough in cancer research", desc: "New drug trial shows 70% success in early stages.", extra: "Experts call it a game changer." },
+      { tag: "Update", title: "Electric buses rolled out across the city", desc: "Officials estimate 30% reduction in emissions this year.", extra: "Fleet expected to double soon." },
+      { tag: "Exclusive", title: "Space mission discovers new exoplanet", desc: "Scientists say it could support liquid water and life.", extra: "Telescope to investigate atmosphere." },
+      { tag: "Alert", title: "Global markets see sudden surge", desc: "Tech sector drives major stock index rally.", extra: "Investors optimistic about future." },
+      { tag: "Trending", title: "New smartphone sets sales record", desc: "Pre-orders cross 5 million in first 48 hours.", extra: "Analysts predict industry shakeup." }
+    ];
+
+    let index = 0; 
+    const newsContainer = document.getElementById("newsContainer");
+
+    function createNewsCard(news) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const randomId = Math.floor(Math.random() * 1000); 
+      card.innerHTML = `
+        <img src="https://picsum.photos/seed/${randomId}/200/150" alt="News">
+        <div class="content">
+          <div class="tag">${news.tag}</div>
+          <h3>${news.title}</h3>
+          <p>${news.desc}</p>
+          <div class="extra">${news.extra}</div>
+        </div>
+      `;
+      return card;
+    }
+
+    function loadInitial() {
+      for (let i = 0; i < 2; i++) {
+        if (index < newsData.length) {
+          newsContainer.appendChild(createNewsCard(newsData[index]));
+          index++;
+        }
+      }
+    }
+
+    function showMore() {
+      for (let i = 0; i < 2; i++) {
+        if (index < newsData.length) {
+          newsContainer.appendChild(createNewsCard(newsData[index]));
+          index++;
+        }
+      }
+      if (index >= newsData.length) {
+        document.getElementById("loadMoreBtn").style.display = "none";
+      }
+    }
+
+    loadInitial();
+
+    // --- Chatbot ---
+    const chatbotIcon = document.getElementById("chatbotIcon");
+    const chatWindow = document.getElementById("chatWindow");
+    const chatBody = document.getElementById("chatBody");
+    const chatInput = document.getElementById("chatInput");
+
+    chatbotIcon.addEventListener("click", () => {
+      chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
+    });
+
+    // Draggable chatbot
+    chatbotIcon.onmousedown = function(event) {
+      let shiftX = event.clientX - chatbotIcon.getBoundingClientRect().left;
+      let shiftY = event.clientY - chatbotIcon.getBoundingClientRect().top;
+      function moveAt(pageX, pageY) {
+        chatbotIcon.style.left = pageX - shiftX + 'px';
+        chatbotIcon.style.top = pageY - shiftY + 'px';
+        chatbotIcon.style.right = "auto"; // allow moving
+        chatbotIcon.style.bottom = "auto";
+        chatbotIcon.style.position = "fixed";
+      }
+      function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+      }
+      document.addEventListener('mousemove', onMouseMove);
+      chatbotIcon.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        chatbotIcon.onmouseup = null;
+      };
+    };
+    chatbotIcon.ondragstart = () => false;
+
+    // Fake translator/explainer
+    function sendMessage() {
+      const userMsg = chatInput.value.trim();
+      if (!userMsg) return;
+      chatBody.innerHTML += `<p><b>You:</b> ${userMsg}</p>`;
+      chatInput.value = "";
+
+      // Simple demo response
+      setTimeout(() => {
+        let response = "Let me explain: " + userMsg + " means something important.";
+        if (userMsg.toLowerCase().includes("hindi")) {
+          response = "अनुवाद: " + userMsg.replace("hindi","") + " (यह हिंदी में है)";
+        }
+        chatBody.innerHTML += `<p><b>Khabrilal:</b> ${response}</p>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }, 600);
+    }
+  </script>
+</body>
+</html>
