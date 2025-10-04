@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOX - Voice of Exposure</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0a0f1e;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      padding: 20px;
+      position: relative;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: red;
+      position: absolute;
+      top: 15px;
+      left: 20px;
+    }
+    .center-heading {
+      text-align: center;
+      margin-top: 40px;
+      position: relative;
+      display: inline-block;
+    }
+    .typing {
+      color: white;
+      font-size: 28px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid red;
+      width: 0;
+      animation: typing 4s steps(30, end) forwards, blink 0.7s step-end infinite;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 380px; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    .typing.finished {
+      border-right: none; /* remove cursor only */
+    }
+    .line {
+      height: 2px;
+      background: red;
+      margin: 6px auto;
+      width: 0;
+      animation: drawLine 2s forwards;
+    }
+    .line.top { animation-delay: 0.2s; }
+    .line.bottom { animation-delay: 4.5s; }
+    @keyframes drawLine {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 20px;
+      min-height: 70vh;
+      position: relative;
+    }
+
+    .blur-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(270deg, #0a0f1e, #1c2b50, #0a0f1e);
+      background-size: 600% 600%;
+      animation: glowShift 12s ease infinite;
+      filter: blur(18px);
+      z-index: 0;
+    }
+    @keyframes glowShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ===== AUDIO SECTION ===== */
+    .audio-section {
+      position: relative;
+      width: 65%;
+      min-height: 420px;
+      border-radius: 14px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background: rgba(0,0,0,0.75);
+      padding: 25px;
+      box-shadow: 0px 0px 25px rgba(0, 200, 255, 0.4);
+    }
+
+    .waveform {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      margin: 20px 0;
+      height: 160px;
+    }
+    .bar {
+      width: 10px;
+      margin: 0 6px;
+      background: white;
+      border-radius: 4px;
+      height: 20px;
+      transition: height 0.2s ease;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .play-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .ticker {
+      white-space: nowrap;
+      overflow: hidden;
+      color: yellow;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+      width: 100%;
+      text-align: center;
+    }
+    .ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 12s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ===== HEADLINES ===== */
+    .headlines {
+      width: 32%;
+      padding: 10px;
+      max-height: 500px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+    .news-card {
+      display: flex;
+      background: #1c1c1c;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+    .news-card img {
+      width: 40%;
+      object-fit: cover;
+    }
+    .news-content {
+      padding: 10px;
+      flex: 1;
+    }
+    .news-category {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+    .news-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: red;
+      margin: 5px 0;
+    }
+    .news-desc {
+      font-size: 14px;
+      color: #ccc;
+    }
+    .dropdown {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 22px;
+      color: red;
+      font-weight: bold;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: black;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      border-top: 2px solid #333;
+    }
+    footer .section {
+      flex: 1;
+      padding: 10px;
+    }
+    .footer-icon {
+      font-size: 28px;
+      display: block;
+    }
+    .rise, .real { color: white; }
+    .vox { color: red; font-weight: bold; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .audio-section, .headlines {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">VOX</div>
+    <div class="center-heading">
+      <div class="line top"></div>
+      <div class="typing">Voice Of eXposure</div>
+      <div class="line bottom"></div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="blur-bg"></div>
+
+    <!-- AUDIO SECTION -->
+    <div class="audio-section">
+      <div class="waveform" id="waveform">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+
+      <div class="controls">
+        <button id="playBtn" class="play-btn">▶ Play</button>
+      </div>
+
+      <div class="ticker" id="ticker">
+        <span id="scrollingText"></span>
+      </div>
+    </div>
+
+    <!-- HEADLINES -->
+    <div class="headlines" id="headlineList">
+      <div class="news-card active">
+        <img src="https://via.placeholder.com/600x300.png?text=Traffic+Lights" alt="Traffic Lights">
+        <div class="news-content">
+          <div class="news-category">High Impact</div>
+          <div class="news-title">AI-powered traffic lights</div>
+          <div class="news-desc">Adaptive signals cut wait times by 22%.</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <img src="https://via.placeholder.com/600x300.png?text=Cancer+Research" alt="Cancer Research">
+        <div class="news-content">
+          <div class="news-category">Breaking</div>
+          <div class="news-title">Cancer research breakthrough</div>
+          <div class="news-desc">Drug trial shows 70% success rate.</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <img src="https://via.placeholder.com/600x300.png?text=Space+Launch" alt="Space Launch">
+        <div class="news-content">
+          <div class="news-category">Tech</div>
+          <div class="news-title">Reusable rocket launch</div>
+          <div class="news-desc">Affordable space travel is closer.</div>
+        </div>
+      </div>
+      <div class="more-headlines" style="display:none;">
+        <div class="news-card">
+          <img src="https://via.placeholder.com/600x300.png?text=Climate+Policy" alt="Climate Policy">
+          <div class="news-content">
+            <div class="news-category">Environment</div>
+            <div class="news-title">Climate policies introduced</div>
+            <div class="news-desc">Carbon emissions cut by 15%.</div>
+          </div>
+        </div>
+        <div class="news-card">
+          <img src="https://via.placeholder.com/600x300.png?text=Stock+Market" alt="Stock Market">
+          <div class="news-content">
+            <div class="news-category">Finance</div>
+            <div class="news-title">Markets at record highs</div>
+            <div class="news-desc">Tech sector drives growth.</div>
+          </div>
+        </div>
+      </div>
+      <div class="dropdown" id="scrollDown">▼</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="section rise">
+      <span class="footer-icon">📈</span>
+      Rise
+    </div>
+    <div class="section real">
+      <span class="footer-icon">🌐</span>
+      Real
+    </div>
+    <div class="section vox">
+      <span class="footer-icon">🎙️</span>
+      Vox
+    </div>
+  </footer>
+
+  <script>
+    const playBtn = document.getElementById("playBtn");
+    const ticker = document.getElementById("ticker");
+    const scrollingText = document.getElementById("scrollingText");
+    const newsCards = document.querySelectorAll(".news-card");
+    const scrollDown = document.getElementById("scrollDown");
+    const moreHeadlines = document.querySelector(".more-headlines");
+    const bars = document.querySelectorAll(".bar");
+    let isPlaying = false;
+    let isExpanded = false;
+    let interval;
+
+    function speak(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-US";
+      speech.rate = 1;
+      window.speechSynthesis.speak(speech);
+    }
+
+    function animateBars() {
+      bars.forEach(bar => {
+        let height = Math.floor(Math.random() * 140) + 20;
+        bar.style.height = height + "px";
+      });
+    }
+
+    // 🔹 Collect full text from a card
+    function getCardText(card) {
+      const category = card.querySelector(".news-category").innerText;
+      const title = card.querySelector(".news-title").innerText;
+      const desc = card.querySelector(".news-desc").innerText;
+      return `${category}. ${title}. ${desc}`;
+    }
+
+    playBtn.addEventListener("click", () => {
+      const activeCard = document.querySelector(".news-card.active");
+      const text = getCardText(activeCard);
+
+      if (!isPlaying) {
+        ticker.style.display = "block";
+        scrollingText.textContent = text;
+        speak(text);
+        playBtn.textContent = "⏸ Pause";
+        interval = setInterval(animateBars, 200);
+        isPlaying = true;
+      } else {
+        ticker.style.display = "none";
+        window.speechSynthesis.cancel();
+        playBtn.textContent = "▶ Play";
+        clearInterval(interval);
+        bars.forEach(bar => bar.style.height = "20px");
+        isPlaying = false;
+      }
+    });
+
+    newsCards.forEach(card => {
+      card.addEventListener("click", () => {
+        newsCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        scrollingText.textContent = getCardText(card);
+      });
+    });
+
+    scrollDown.addEventListener("click", () => {
+      if (!isExpanded) {
+        moreHeadlines.style.display = "block";
+        scrollDown.textContent = "▲";
+        isExpanded = true;
+      } else {
+        moreHeadlines.style.display = "none";
+        scrollDown.textContent = "▼";
+        isExpanded = false;
+      }
+    });
+
+    // 🔹 Make cursor disappear after typing animation finishes
+    window.addEventListener("DOMContentLoaded", () => {
+      const typingText = document.querySelector(".typing");
+      typingText.addEventListener("animationend", (e) => {
+        if (e.animationName === "typing") {
+          typingText.classList.add("finished");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
