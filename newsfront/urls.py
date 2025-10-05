@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', include(risehome.urls))
+    path('', include('rise.urls')),
+    path('real/', include('real.urls')),
+    path('vox/', include('voex.urls'))
 ]
